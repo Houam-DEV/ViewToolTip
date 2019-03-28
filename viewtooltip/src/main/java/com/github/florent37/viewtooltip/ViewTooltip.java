@@ -633,6 +633,7 @@ public class ViewTooltip {
 
         protected void handleAutoRemove() {
             if (clickToHide) {
+                isShowing = false;
                 setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -644,6 +645,7 @@ public class ViewTooltip {
             }
 
             if (autoHide) {
+                isShowing = false;
                 postDelayed(new Runnable() {
                     @Override
                     public void run() {
