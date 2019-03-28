@@ -90,7 +90,7 @@ public class ViewTooltip {
         return view;
     }
 
-    public static boolean isShowing(){
+    public boolean isShowing(){
         return isShowing;
     }
 
