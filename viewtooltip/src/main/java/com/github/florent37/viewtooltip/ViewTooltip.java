@@ -41,7 +41,7 @@ public class ViewTooltip {
     private View rootView;
     private final View view;
     private final TooltipView tooltip_view;
-    private static boolean animating = false;
+    private static boolean isShowing = false;
 
 
     private ViewTooltip(MyContext myContext, View view) {
@@ -90,8 +90,8 @@ public class ViewTooltip {
         return view;
     }
 
-    public static boolean isAnimating(){
-        return animating;
+    public static boolean isShowing(){
+        return isShowing;
     }
 
     public static ViewTooltip on(final View view) {
@@ -181,6 +181,7 @@ public class ViewTooltip {
     }
 
     public TooltipView show() {
+        isShowing = true;
         final Context activityContext = tooltip_view.getContext();
         if (activityContext != null && activityContext instanceof Activity) {
             final ViewGroup decorView = rootView != null ?
@@ -227,6 +228,7 @@ public class ViewTooltip {
     }
 
     public void close(){
+        isShowing = false;
         tooltip_view.close();
     }
 
@@ -652,13 +654,11 @@ public class ViewTooltip {
         }
 
         public void remove() {
-            animating = true;
             startExitAnimation(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     super.onAnimationEnd(animation);
                     removeNow();
-                    animating = false;
                 }
             });
         }
