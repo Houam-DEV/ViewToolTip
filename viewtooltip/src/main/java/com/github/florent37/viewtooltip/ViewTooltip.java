@@ -41,6 +41,8 @@ public class ViewTooltip {
     private View rootView;
     private final View view;
     private final TooltipView tooltip_view;
+    private static boolean animating = false;
+
 
     private ViewTooltip(MyContext myContext, View view) {
         this.view = view;
@@ -48,6 +50,7 @@ public class ViewTooltip {
         final RecyclerView scrollParent = findScrollParent(view);
         if (scrollParent != null) {
             scrollParent.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
                 @Override
                 public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
@@ -81,6 +84,10 @@ public class ViewTooltip {
 
     private ViewTooltip(View view) {
         this(new MyContext(getActivityContext(view.getContext())), view);
+    }
+
+    public static boolean isAnimating(){
+        return animating;
     }
 
     public static ViewTooltip on(final View view) {
@@ -365,6 +372,8 @@ public class ViewTooltip {
         public void animateExit(View view, Animator.AnimatorListener animatorListener) {
             view.animate().alpha(0).setDuration(fadeDuration).setListener(animatorListener);
         }
+
+
     }
 
     public static class TooltipView extends FrameLayout {
@@ -404,6 +413,7 @@ public class ViewTooltip {
         private Rect viewRect;
         private int distanceWithView = 0;
         private int shadowColor = Color.parseColor("#aaaaaa");
+
 
         public TooltipView(Context context) {
             super(context);
@@ -638,11 +648,13 @@ public class ViewTooltip {
         }
 
         public void remove() {
+            animating = true;
             startExitAnimation(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     super.onAnimationEnd(animation);
                     removeNow();
+                    animating = false;
                 }
             });
         }
