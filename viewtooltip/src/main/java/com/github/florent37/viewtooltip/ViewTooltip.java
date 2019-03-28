@@ -15,10 +15,12 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 
 import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Html;
 import android.view.View;
@@ -43,12 +45,13 @@ public class ViewTooltip {
     private ViewTooltip(MyContext myContext, View view) {
         this.view = view;
         this.tooltip_view = new TooltipView(myContext.getContext());
-        final NestedScrollView scrollParent = findScrollParent(view);
+        final RecyclerView scrollParent = findScrollParent(view);
         if (scrollParent != null) {
-            scrollParent.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            scrollParent.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
-                public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                    tooltip_view.setTranslationY(tooltip_view.getTranslationY() - (scrollY - oldScrollY));
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    tooltip_view.setTranslationX(tooltip_view.getTranslationX() - (dx));
                 }
             });
         }
@@ -58,14 +61,21 @@ public class ViewTooltip {
         this.rootView = rootView;
         this.view = view;
         this.tooltip_view = new TooltipView(myContext.getContext());
-        final NestedScrollView scrollParent = findScrollParent(view);
+        final RecyclerView scrollParent = findScrollParent(view);
         if (scrollParent != null) {
-            scrollParent.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            scrollParent.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    tooltip_view.setTranslationX(tooltip_view.getTranslationX() - (dx));
+                }
+            });
+            /*scrollParent.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
                 @Override
                 public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
                     tooltip_view.setTranslationY(tooltip_view.getTranslationY() - (scrollY - oldScrollY));
                 }
-            });
+            });*/
         }
     }
 
@@ -89,11 +99,11 @@ public class ViewTooltip {
         return new ViewTooltip(new MyContext(getActivityContext(activity)), rootView, view);
     }
 
-    private NestedScrollView findScrollParent(View view) {
+    private RecyclerView findScrollParent(View view) {
         if (view.getParent() == null || !(view.getParent() instanceof View)) {
             return null;
-        } else if (view.getParent() instanceof NestedScrollView) {
-            return ((NestedScrollView) view.getParent());
+        } else if (view.getParent() instanceof RecyclerView) {
+            return ((RecyclerView) view.getParent());
         } else {
             return findScrollParent(((View) view.getParent()));
         }
