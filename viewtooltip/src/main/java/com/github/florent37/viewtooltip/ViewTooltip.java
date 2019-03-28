@@ -86,6 +86,10 @@ public class ViewTooltip {
         this(new MyContext(getActivityContext(view.getContext())), view);
     }
 
+    public View getView(){
+        return view;
+    }
+
     public static boolean isAnimating(){
         return animating;
     }
