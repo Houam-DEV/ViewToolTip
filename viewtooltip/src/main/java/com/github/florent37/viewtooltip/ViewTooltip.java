@@ -31,6 +31,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import java.util.Arrays;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by florentchampigny on 02/06/2017.
@@ -38,6 +39,7 @@ import java.util.Arrays;
 
 public class ViewTooltip {
 
+    private ReentrantLock lock = new ReentrantLock();
     private View rootView;
     private final View view;
     private final TooltipView tooltip_view;
@@ -182,6 +184,10 @@ public class ViewTooltip {
 
     public TooltipView show() {
         isShowing = true;
+        if (lock.isLocked()){
+            return null;
+        }
+        lock.lock();
         final Context activityContext = tooltip_view.getContext();
         if (activityContext != null && activityContext instanceof Activity) {
             final ViewGroup decorView = rootView != null ?
@@ -221,6 +227,7 @@ public class ViewTooltip {
                             return false;
                         }
                     });
+                    lock.unlock();
                 }
             }, 100);
         }
