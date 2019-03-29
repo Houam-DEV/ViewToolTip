@@ -39,7 +39,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class ViewTooltip {
 
-    private ReentrantLock lock = new ReentrantLock();
+    private Locker lock = new Locker();
     private View rootView;
     private final View view;
     private final TooltipView tooltip_view;
